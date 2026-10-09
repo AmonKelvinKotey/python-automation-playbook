@@ -1,21 +1,20 @@
-import sys
-import os
+import argparse 
 from parser import parse_log_file
 from analyzer import analyze_failed_logins
 from report import generate_report
 
-def main():
-    # 1. Guard command-line arguments
-    if len(sys.argv) < 2:
-        print("Usage: python3 main.py <path_to_log_file>")
-        sys.exit(1)
+# 1. Initialize Argument Parser
+parser = argparse.ArgumentParser(description="Security Log Analyzer CLI Tool")
 
-    log_filename = sys.argv[1]
+# 2. Add Arguments/Flags
+parser.add_argument("-f", "--file", required=True, help="Path to the target log file")
+parser.add_argument("-o", "--output", default="report.json", help="Destination path for generated report")
+parser.add_argument("-fmt", "--format", choices=["json", "csv"], default="json", help="Output format (json or csv)")
 
-    # 2. Pipeline Execution
-    raw_lines = parse_log_file(log_filename)
-    metrics = analyze_failed_logins(raw_lines)
-    generate_report(metrics, "system_report.txt")
+# 3. Parse Arguments from CLI
+args = parser.parse_args()
 
-if __name__ == "__main__":
-    main()
+# 4. Pipeline Execution
+raw_lines = parse_log_file(args.file)
+metrics = analyze_failed_logins(raw_lines)
+generate_report(metrics, args.output, args.format)
