@@ -1,5 +1,6 @@
-import json
 import csv
+import json
+
 
 def generate_report(summary_data, output_path, format_type):
     if format_type == "json":
@@ -14,4 +15,3 @@ def generate_report(summary_data, output_path, format_type):
             for user, count in summary_data.items():
                 writer.writerow([user, count])
         print(f"[+] Successfully exported CSV report to: {output_path}")
-
